@@ -2,12 +2,12 @@ const express = require("express");
 require("dotenv").config();
 const logger = require("morgan");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
+
 const connection = require("./config/dbConnection");
 const userRouter = require("./routes/userRouter");
 const { authRouter } = require("./routes/index");
 const chatRouter = require("./routes/chatRouters");
-
-const cors = require("cors");
 
 const { resetPassword } = require("./src/controllers/userControllers");
 const { verifySignUpMail } = require("./src/middlewares/createAccount");
@@ -23,17 +23,9 @@ connection(); //server connection function
 // app.use(cors({ origin: "*", credentials: true, allowedHeaders: true }));
 
 /**allow cross-origin-request-sharing(CORS)*/
-app.use(
-  cors({
-    methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
-    origin: "*",
-//     credentials: true,
-    allowedHeaders: true
-  })
-);
+app.use(cors());
 app.use(express.json());
 app.use(logger("dev")); //logger to log every request and response summary
-
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
@@ -65,8 +57,8 @@ app.use("/api/citrone/user", authentication, userRouter);
 //default routes
 app.use(["/", "/api/citrone"], (req, res) => {
   res.status(404).json({
-    success: false,
-    message: "API endpoint doesnt exist",
+    success: true,
+    message: "Welcome to CITRONE",
   });
   return;
 });
